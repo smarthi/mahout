@@ -68,8 +68,13 @@ package object drm {
         val resBlock = if (densityAnalysis(block)) {
           val dBlock = new DenseMatrix(Array.ofDim[Double](vectors.length, blockncol), true)
           var row = 0
+          val isDense = block.getFlavor.isDense
           while (row < vectors.length) {
-            dBlock(row, ::) := vectors(row)
+            if (isDense) {
+              dBlock(row, ::) := vectors(row)
+            } else {
+              dBlock(row, ::) := new DenseVector(vectors(row))
+            }
             row += 1
           }
           dBlock
